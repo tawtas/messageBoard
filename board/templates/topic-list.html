@@ -1,0 +1,87 @@
+<html>
+	<head>
+			<script src= "http://code.jquery.com/jquery-2.1.1.js"> </script>
+	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+	<nav class="navbar navbar-inverse" role="navigation">
+	  <div class="container-fluid">
+	    <!-- Brand and toggle get grouped for better mobile display -->
+	    <div class="navbar-header">
+	      <a class="navbar-brand" href={% url 'main' %}>MessageBoard</a>
+	    </div>
+	    <ul class="nav navbar-nav navbar-right">
+        	<li><a href={% url 'sign-up' %}>Sign Up</a></li>
+        	{% if user_login == False %}
+        	<li><a data-toggle="modal" data-target="#signin" href="#">Log In</a></li>
+        	{% else %}
+        	<li><a href={% url 'logout' %}>Log Out</a></li>
+        	<li><a>Logged in as {{user.username}}</a></li>
+        	{% endif %}
+    	</ul>
+	</nav>
+		<style type = "text/css">
+			.centerdiv
+			{
+				margin-right: auto;
+				margin-left: auto;
+				width: 35%;
+			}
+		</style>
+		<br>
+		<div class ="container centerdiv">
+			<div class = "page-header">
+				<h2>Board Topics</h2>
+			</div>
+			{% for topic in topics %}
+			<div class = "well">
+				<b>{{topic.title}}</b>
+				<a class = "btn btn-primary pull-right" href = {% url 'topic-detail' topic.id %} >View Posts</a>
+			</div>
+			{% endfor %}
+			{% if user_login == True %}
+			<a class = "btn btn-primary" href="#" data-toggle="modal" data-target="#newtopic">Create New Topic</a>
+			{% endif %}
+		</div>
+		<div class="modal fade" role="dialog" id = "signin">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		    <div class="modal-header">
+		  		<h4>Login a User</h4>
+		  	</div>
+		  	<form method = "post" action = {% url 'sign-in' %} class = "centerdiv" style = "text-align:center">
+		  		{% csrf_token %}
+		  	  <b>Username</b>
+		      <input type = "text" class = "form-control" name = "username">
+		      <br>
+		      <b>Password</b>
+		      <input type = "password" class = "form-control" name = "password">
+		      <br>
+		      <input type = "submit" class = "btn btn-success" value = "Sign In!">
+		    </form>
+		    </div>
+		  </div>
+		</div>
+
+		<div class="modal fade" role="dialog" id = "newtopic">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		    <div class="modal-header">
+		  		<h4>New Topic</h4>
+		  	</div>
+		  	<form method = "post" action = {% url 'new-topic' %} class = "centerdiv" style = "text-align:center">
+		  	{% csrf_token %}
+		  	  <b>Topic Name</b>
+		      <input type = "text" class = "form-control" name = "topic_name">
+		      <br>
+		      <input type = "submit" class = "btn btn-success" value = "Create">
+		    </form>
+		    </div>
+		  </div>
+		</div>
+
+
+
+	</body>
+</html>

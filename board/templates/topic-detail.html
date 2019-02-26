@@ -1,0 +1,86 @@
+<html>
+	<head>
+			<script src= "http://code.jquery.com/jquery-2.1.1.js"> </script>
+	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+	<nav class="navbar navbar-inverse" role="navigation">
+	  <div class="container-fluid">
+	    <!-- Brand and toggle get grouped for better mobile display -->
+	    <div class="navbar-header">
+	      <a class="navbar-brand" href={% url 'main' %}>MessageBoard</a>
+	    </div>
+	    <ul class="nav navbar-nav navbar-right">
+        	<li><a href={% url 'sign-up' %}>Sign Up</a></li>
+        	{% if user_login == False %}
+        	<li><a data-toggle="modal" data-target="#signin" href="#">Log In</a></li>
+        	{% else %}
+        	<li><a href={% url 'logout' %}>Log Out</a></li>
+        	<li><a>Logged in as {{user.username}}</a></li>
+        	{% endif %}
+    	</ul>
+	</nav>
+		<style type = "text/css">
+			.centerdiv
+			{
+				margin-right: auto;
+				margin-left: auto;
+				width: 35%;
+			}
+			.post
+			{
+				height:80px;
+			}
+		</style>
+		<br>
+		<div class ="container centerdiv">
+			<div class = "page-header">
+				<h2>{{topic.title}}</h2>
+			</div>
+			{% for post in posts %}
+			<div class = "well post">
+				{{post.content}}
+				<div class = "pull-right">
+				Post By:
+					{{post.author.username}}
+					<br>
+					{% if post in user.post_set.all %}
+					<form method = 'post' action = {% url 'delete-post' %}>
+						{% csrf_token %}
+					<input type = "hidden" name = "post_id" value = {{post.id}}>
+					<input type = "submit" class = "btn btn-danger" value = "Delete Post"> 
+					</form>
+					{% endif %}
+				</div>
+			</div>
+			{% endfor %}
+			
+			{% if user_login == True %}
+			<a class = "btn btn-success" data-toggle = "modal" data-target="#newpost">Add New Post</a>
+			{% endif %}
+
+			</div>
+			
+			</div>
+
+		<div class="modal fade" role="dialog" id = "newpost">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		    <div class="modal-header">
+		  		<h4>Add a Post</h4>
+		  	</div>
+		  	<form method = "post" action = {% url 'add-post' %} class = "centerdiv" style = "text-align:center">
+		  		{% csrf_token %}
+		  	  <b>Post</b>
+		      <textarea rows="4" cols="50" = "text" class = "form-control" name = "post_content">
+		      </textarea>
+		      <br>
+		      <input type = "hidden" class = "form-control" name = "topic_id" value = {{topic.id}}>
+		      <input type = "submit" class = "btn btn-success" value = "Post!">
+		    </form>
+		    </div>
+		  </div>
+		</div>
+</body>
+</html>
